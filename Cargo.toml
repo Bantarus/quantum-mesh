@@ -1,0 +1,49 @@
+[package]
+name = "quantum-mesh"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+sha2 = "0.10.8"
+libp2p = { version = "0.54.0", features = [
+    "async-std",
+    "tokio",
+    "tcp",
+    "dns",
+    "noise",
+    "yamux",
+    "gossipsub",
+    "mdns",
+    "ping",
+    "relay",
+    "dcutr",
+    "quic",
+    "macros",
+    "identify",
+    "kad",
+    "metrics",
+]}
+tokio = { version = "1.36", features = ["full"] }
+futures = "0.3"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+rand = "0.8"
+async-std = "1.12"
+chrono = "0.4"
+bellman = "0.14.0"
+ff = "0.13"
+group = "0.13"
+lru = "0.7.8"
+bls12_381 = "0.8"
+pairing = "0.23"
+digest = "0.10"
+bincode = "1.3"
+concrete = "=0.2.1"
+ml-kem = "0.2.1"
+rand_core = "0.6.4"
+chacha20poly1305 = "0.10.1"
+pqcrypto-dilithium = "0.5.0"
+pqcrypto-traits = "0.3.5"
+hex = "0.4"
+[dev-dependencies]
+tokio-test = "0.4"
