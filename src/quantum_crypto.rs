@@ -19,9 +19,25 @@ use std::error::Error as StdError;
 use serde::{Serialize, Deserialize};
 use sha2::{Sha256, Digest};
 use std::time::{SystemTime, UNIX_EPOCH};
-use crate::Point;
 use std::collections::HashMap;
 use std::sync::Mutex;
+
+// Move Point and GeometricProof here
+#[derive(Clone, Debug, Serialize, Deserialize)]
+pub struct Point {
+    pub x: f64,
+    pub y: f64,
+}
+
+#[derive(Clone, Debug, Serialize, Deserialize)]
+pub struct GeometricProof {
+    pub tessellation_points: Vec<Point>,
+    pub verification_path: Vec<Point>,
+    pub position_data: Vec<u8>,
+    pub hash: String,
+    pub signature: Vec<u8>,
+    pub timestamp: u64,
+}
 
 /// Represents the quantum-resistant cryptographic state for a node
 #[derive(Clone)]
@@ -88,17 +104,6 @@ pub struct QuantumProof {
     pub hash: String,
     pub signature: Vec<u8>,
     pub timestamp: u64,
-}
-
-/// Represents a geometric proof for transaction validation
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct GeometricProof {
-    pub hash: String,
-    pub signature: Vec<u8>,
-    pub timestamp: u64,
-    pub position_data: Vec<u8>,
-    pub tessellation_points: Vec<Point>,
-    pub verification_path: Vec<Point>,
 }
 
 // Define the traits that main.rs is trying to implement
