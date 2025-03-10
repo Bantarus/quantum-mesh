@@ -1,4 +1,4 @@
-use quantum_mesh::quantum_crypto::{QuantumCrypto, QuantumCryptoError, HasCoordinates, HasTransactionData};
+use quantum_mesh::quantum_crypto::{QuantumCrypto, QuantumCryptoError, HasTransactionData};
 use std::collections::HashMap;
 use sha2::{Sha256, Digest};
 use libp2p::{
