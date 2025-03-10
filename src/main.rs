@@ -1,5 +1,4 @@
-mod quantum_crypto;
-use quantum_crypto::{QuantumCrypto, QuantumCryptoError, HasCoordinates, HasTransactionData};
+use quantum_mesh::quantum_crypto::{QuantumCrypto, QuantumCryptoError, HasCoordinates, HasTransactionData};
 use std::collections::HashMap;
 use sha2::{Sha256, Digest};
 use libp2p::{
@@ -39,11 +38,7 @@ pub struct Transaction {
     pub signature: String,
 }
 
-// Implement the crypto traits for our domain types
-impl HasCoordinates for Point {
-    fn get_x(&self) -> f64 { self.x }
-    fn get_y(&self) -> f64 { self.y }
-}
+
 
 impl HasTransactionData for Transaction {
     fn get_sender(&self) -> &str { &self.from }
@@ -703,7 +698,7 @@ impl QuantumMesh {
     }
 
     fn hyperbolic_distance(&self, p1: &Point, p2: &Point) -> f64 {
-        <QuantumMesh as HyperbolicDistance>::hyperbolic_distance(p1, p2)
+        hyperbolic_distance(p1, p2)
     }
 
     // Update the validate_transaction method to handle async correctly

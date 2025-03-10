@@ -1,7 +1,7 @@
 use std::hash::{Hash, Hasher};
 use serde::{Serialize, Deserialize};
 
-#[derive(Clone, Debug, Serialize, Deserialize)]
+#[derive(Clone, Copy, Debug, Serialize, Deserialize)]
 pub struct Point {
     pub x: f64,
     pub y: f64,
@@ -21,6 +21,18 @@ impl Hash for Point {
         self.x.to_bits().hash(state);
         self.y.to_bits().hash(state);
     }
+}
+
+// Define the traits that main.rs is trying to implement
+pub trait HasCoordinates {
+    fn get_x(&self) -> f64;
+    fn get_y(&self) -> f64;
+}
+
+// Implement the crypto traits for our domain types
+impl HasCoordinates for Point {
+    fn get_x(&self) -> f64 { self.x }
+    fn get_y(&self) -> f64 { self.y }
 }
 
 // Add hyperbolic distance calculation to the geometry module

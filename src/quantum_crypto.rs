@@ -21,11 +21,7 @@ use sha2::{Sha256, Digest};
 use std::time::{SystemTime, UNIX_EPOCH};
 use std::collections::HashMap;
 use std::sync::Mutex;
-
-use crate::geometry::Point;
-
-
-
+use crate::geometry::{Point, hyperbolic_distance};
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct GeometricProof {
@@ -104,11 +100,7 @@ pub struct QuantumProof {
     pub timestamp: u64,
 }
 
-// Define the traits that main.rs is trying to implement
-pub trait HasCoordinates {
-    fn get_x(&self) -> f64;
-    fn get_y(&self) -> f64;
-}
+
 
 pub trait HasTransactionData {
     fn get_sender(&self) -> &str;
