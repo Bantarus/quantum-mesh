@@ -6,7 +6,7 @@ use std::time::{SystemTime, UNIX_EPOCH};
 use bincode;
 use std::collections::HashSet;
 use rand::{Rng, thread_rng};
-use crate::hyperbolic::HyperbolicDistance;
+use crate::hyperbolic::hyperbolic_distance;
 
 pub struct GenesisConfig {
     pub initial_validators: Vec<User>,
@@ -162,7 +162,7 @@ impl GenesisBlock {
                 // Check if this position maintains minimum hyperbolic distance
                 let mut valid_position = true;
                 for (_, existing) in &positions {
-                    let distance = <HyperbolicDistance>::hyperbolic_distance(&candidate, existing);
+                    let distance = hyperbolic_distance(&candidate, existing);
                     if distance < min_hyperbolic_distance {
                         valid_position = false;
                         break;
@@ -229,7 +229,7 @@ impl GenesisBlock {
                 let mut nearest_region = 0;
                 
                 for (j, center) in region_centers.iter().enumerate() {
-                    let distance = <HyperbolicDistance>::hyperbolic_distance(position, center);
+                    let distance = hyperbolic_distance(position, center);
                     if distance < min_distance {
                         min_distance = distance;
                         nearest_region = j;
@@ -275,7 +275,7 @@ impl GenesisBlock {
             let mut max_distance: f64 = 0.1;  // Minimum radius
             
             for (_, position) in validator_positions {
-                let distance = <HyperbolicDistance>::hyperbolic_distance(center, position);
+                let distance = hyperbolic_distance(center, position);
                 max_distance = max_distance.max(distance);
             }
             
@@ -414,21 +414,21 @@ impl GenesisBlock {
                 .filter(|&p| !visited.contains(p))
                 .collect();
             
-            while <HyperbolicDistance>::hyperbolic_distance(&current, validator_pos) > 0.1 {
+            while hyperbolic_distance(&current, validator_pos) > 0.1 {
                 // Sort by combined distance (to current + to target)
                 candidates.sort_by(|&a, &b| {
-                    let dist_a = <HyperbolicDistance>::hyperbolic_distance(&current, a) +
-                                <HyperbolicDistance>::hyperbolic_distance(a, validator_pos);
-                    let dist_b = <HyperbolicDistance>::hyperbolic_distance(&current, b) +
-                                <HyperbolicDistance>::hyperbolic_distance(b, validator_pos);
+                    let dist_a = hyperbolic_distance(&current, a) +
+                                hyperbolic_distance(a, validator_pos);
+                    let dist_b = hyperbolic_distance(&current, b) +
+                                hyperbolic_distance(b, validator_pos);
                     dist_a.partial_cmp(&dist_b).unwrap_or(std::cmp::Ordering::Equal)
                 });
                 
                 // Use closest point that's closer to target than current
                 let mut found = false;
                 for &candidate in &candidates {
-                    if <HyperbolicDistance>::hyperbolic_distance(candidate, validator_pos) < 
-                       <HyperbolicDistance>::hyperbolic_distance(&current, validator_pos) {
+                    if hyperbolic_distance(candidate, validator_pos) < 
+                       hyperbolic_distance(&current, validator_pos) {
                         path.push(candidate.clone());
                         visited.insert(candidate.clone());
                         current = candidate.clone();
@@ -515,7 +515,7 @@ impl GenesisBlock {
         for (_, pos) in &self.initial_state.validator_positions {
             // Find closest tessellation point
             let min_distance = self.initial_state.initial_tessellation.iter()
-                .map(|p| <HyperbolicDistance>::hyperbolic_distance(p, pos))
+                .map(|p| hyperbolic_distance(p, pos))
                 .min_by(|a, b| a.partial_cmp(b).unwrap_or(std::cmp::Ordering::Equal))
                 .unwrap_or(f64::MAX);
                 
@@ -527,7 +527,7 @@ impl GenesisBlock {
         
         // Check that verification path is continuous
         for window in self.proof.verification_path.windows(2) {
-            let distance = <HyperbolicDistance>::hyperbolic_distance(&window[0], &window[1]);
+            let distance = hyperbolic_distance(&window[0], &window[1]);
             if distance > 0.5 {
                 return Ok(false);
             }

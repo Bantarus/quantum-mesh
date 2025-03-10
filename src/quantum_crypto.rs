@@ -27,7 +27,7 @@ use std::cmp::Ordering;
 
 
 // Move Point and GeometricProof here
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, Eq, Hash)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct Point {
     pub x: f64,
     pub y: f64,

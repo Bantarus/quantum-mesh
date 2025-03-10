@@ -228,6 +228,9 @@ trait HyperbolicDistance {
         let euclidean_dist = (dx * dx + dy * dy).sqrt();
 
         // Add safeguard for numerical stability
+        if euclidean_dist >= 0.99 {
+            return f64::MAX;
+        }
         
         
         2.0 * ((1.0 + euclidean_dist) / (1.0 - euclidean_dist)).ln()

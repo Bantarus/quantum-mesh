@@ -8,4 +8,4 @@ pub mod hyperbolic;
 pub use quantum_crypto::{Point, GeometricProof, QuantumCrypto};
 pub use types::{User, Node, HyperbolicRegion, Block, Transaction, SerializableKeypair};
 pub use genesis::{GenesisBlock, GenesisConfig, NetworkParameters};
-pub use hyperbolic::HyperbolicDistance;
+pub use hyperbolic::hyperbolic_distance;
