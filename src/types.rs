@@ -1,8 +1,8 @@
 use serde::{Serialize, Deserialize};
-use crate::quantum_crypto::{Point, GeometricProof, QuantumCrypto};
+use crate::quantum_crypto::QuantumCrypto;
 use libp2p::identity;
 use std::sync::Arc;
-
+use crate::geometry::Point;
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct Node {
     pub position: Point,

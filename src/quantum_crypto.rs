@@ -21,33 +21,11 @@ use sha2::{Sha256, Digest};
 use std::time::{SystemTime, UNIX_EPOCH};
 use std::collections::HashMap;
 use std::sync::Mutex;
-use std::hash::{Hash, Hasher};
-use std::cmp::Ordering;
+
+use crate::geometry::Point;
 
 
 
-// Move Point and GeometricProof here
-#[derive(Clone, Debug, Serialize, Deserialize)]
-pub struct Point {
-    pub x: f64,
-    pub y: f64,
-}
-
-impl PartialEq for Point {
-    fn eq(&self, other: &Self) -> bool {
-        self.x.to_bits() == other.x.to_bits() && 
-        self.y.to_bits() == other.y.to_bits()
-    }
-}
-
-impl Eq for Point {}
-
-impl Hash for Point {
-    fn hash<H: Hasher>(&self, state: &mut H) {
-        self.x.to_bits().hash(state);
-        self.y.to_bits().hash(state);
-    }
-}
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct GeometricProof {

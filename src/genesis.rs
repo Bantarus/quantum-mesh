@@ -1,12 +1,12 @@
 use crate::types::{User, HyperbolicRegion, Block};
-use crate::quantum_crypto::{QuantumCrypto, Point, GeometricProof};
+use crate::quantum_crypto::{QuantumCrypto, GeometricProof};
 use sha2::{Sha256, Digest};
 use std::error::Error;
 use std::time::{SystemTime, UNIX_EPOCH};
 use bincode;
 use std::collections::HashSet;
 use rand::{Rng, thread_rng};
-use crate::hyperbolic::hyperbolic_distance;
+use crate::geometry::{Point, hyperbolic_distance};
 
 pub struct GenesisConfig {
     pub initial_validators: Vec<User>,

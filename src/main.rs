@@ -26,12 +26,9 @@ use lru::LruCache;
 use std::sync::Mutex;
 use std::sync::Arc;
 use bincode;
+use quantum_mesh::geometry::{Point, hyperbolic_distance};
 
-#[derive(Clone, Copy, Debug, Serialize, Deserialize, PartialEq)]
-pub struct Point {
-    pub x: f64,
-    pub y: f64,
-}
+
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct Transaction {
@@ -220,22 +217,7 @@ struct HyperbolicRouter {
     shards: Vec<Shard>,
 }
 
-// First, create a trait for hyperbolic calculations
-trait HyperbolicDistance {
-    fn hyperbolic_distance(p1: &Point, p2: &Point) -> f64 {
-        let dx = p2.x - p1.x;
-        let dy = p2.y - p1.y;
-        let euclidean_dist = (dx * dx + dy * dy).sqrt();
 
-        // Add safeguard for numerical stability
-        if euclidean_dist >= 0.99 {
-            return f64::MAX;
-        }
-        
-        
-        2.0 * ((1.0 + euclidean_dist) / (1.0 - euclidean_dist)).ln()
-    }
-}
 
 impl HyperbolicRouter {
     fn new(max_cache_size: usize) -> Self {
@@ -381,7 +363,7 @@ impl HyperbolicRouter {
         
         for (i, other) in self.regions.iter().enumerate() {
             if i != region_idx {
-                let distance = <HyperbolicRouter as HyperbolicDistance>::hyperbolic_distance(&region.center, &other.center);
+                let distance = hyperbolic_distance(&region.center, &other.center);
                 if distance < min_distance {
                     min_distance = distance;
                     closest = Some((i, distance));
@@ -508,7 +490,7 @@ impl HyperbolicRouter {
     }
 
     fn hyperbolic_distance(&self, p1: &Point, p2: &Point) -> f64 {
-        <HyperbolicRouter as HyperbolicDistance>::hyperbolic_distance(p1, p2)
+        hyperbolic_distance(p1, p2)
     }
 
     fn find_shard_for_node(&self, node_id: &str) -> usize {
@@ -2915,7 +2897,7 @@ impl QuantumMesh {
         for point in points {
             for vp_point in &proof.verification_path {
                 // Use the hyperbolic distance calculation
-                let distance = <QuantumMesh as HyperbolicDistance>::hyperbolic_distance(point, vp_point);
+                let distance = hyperbolic_distance(point, vp_point);
                 total_distance += distance;
                 count += 1;
             }
@@ -2942,7 +2924,7 @@ impl QuantumMesh {
         self.users.values()
             .any(|user| {
                 user.node.is_validator && 
-                <QuantumMesh as HyperbolicDistance>::hyperbolic_distance(&user.node.position, point) < 0.1
+                hyperbolic_distance(&user.node.position, point) < 0.1
             })
     }
 
@@ -3261,7 +3243,7 @@ impl HyperbolicRouter {
         let mut max_distance: f64 = 0.0;
         for node_id in cluster {
             if let Some(user) = users.get(node_id) {
-                let distance = <HyperbolicRouter as HyperbolicDistance>::hyperbolic_distance(&center, &user.node.position);
+                let distance = hyperbolic_distance(&center, &user.node.position);
                 max_distance = f64::max(max_distance, distance);
             }
         }
@@ -3273,9 +3255,6 @@ impl HyperbolicRouter {
     }
 }
 
-// Implement the trait for any other structs that need it
-impl HyperbolicDistance for QuantumMesh {}
-impl HyperbolicDistance for HyperbolicRouter {}
 
 
 
