@@ -1,4 +1,4 @@
-use crate::types::{User, Node, HyperbolicRegion, Block};
+use crate::types::{User, HyperbolicRegion, Block};
 use crate::quantum_crypto::{QuantumCrypto, Point, GeometricProof};
 use sha2::{Sha256, Digest};
 use std::error::Error;
@@ -69,9 +69,10 @@ impl GenesisBlock {
             timestamp: config.timestamp,
             transactions: vec![], // Genesis block has no transactions
             hash: Self::calculate_genesis_hash(&genesis_state)?,
-            difficulty: 0,       // Genesis block difficulty is typically 0
-            nonce: 0,            // No mining needed for genesis
-            merkle_root: "0".to_string(), // No transactions means empty merkle root
+            height: 0,
+          //  difficulty: 0,       // Genesis block difficulty is typically 0
+         //   nonce: 0,            // No mining needed for genesis
+        //    merkle_root: "0".to_string(), // No transactions means empty merkle root
         };
         
         // 7. Generate geometric proof for genesis block
@@ -271,7 +272,7 @@ impl GenesisBlock {
         // Create hyperbolic regions with appropriate radii
         for (i, center) in region_centers.iter().enumerate() {
             // Calculate maximum distance to any assigned validator
-            let mut max_distance = 0.1;  // Minimum radius
+            let mut max_distance: f64 = 0.1;  // Minimum radius
             
             for (_, position) in validator_positions {
                 let distance = <HyperbolicDistance>::hyperbolic_distance(center, position);
